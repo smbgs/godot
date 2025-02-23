@@ -504,6 +504,25 @@ String TreeItem::get_suffix(int p_column) const {
 	return cells[p_column].suffix;
 }
 
+void TreeItem::set_subtext(int p_column, String p_subtext) {
+	ERR_FAIL_INDEX(p_column, cells.size());
+
+	if (cells[p_column].subtext == p_subtext) {
+		return;
+	}
+
+	cells.write[p_column].subtext = p_subtext;
+	cells.write[p_column].dirty = true;	
+	cells.write[p_column].cached_minimum_size_dirty = true;
+
+	_changed_notify(p_column);
+}
+
+String TreeItem::get_subtext(int p_column) const {
+	ERR_FAIL_INDEX_V(p_column, cells.size(), "");
+	return cells[p_column].subtext;
+}
+
 void TreeItem::set_icon(int p_column, const Ref<Texture2D> &p_icon) {
 	ERR_FAIL_INDEX(p_column, cells.size());
 
@@ -1709,6 +1728,9 @@ void TreeItem::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_suffix", "column", "text"), &TreeItem::set_suffix);
 	ClassDB::bind_method(D_METHOD("get_suffix", "column"), &TreeItem::get_suffix);
 
+	ClassDB::bind_method(D_METHOD("set_subtext", "column", "text"), &TreeItem::set_subtext);
+	ClassDB::bind_method(D_METHOD("get_subtext", "column"), &TreeItem::get_subtext);
+
 	ClassDB::bind_method(D_METHOD("set_icon", "column", "texture"), &TreeItem::set_icon);
 	ClassDB::bind_method(D_METHOD("get_icon", "column"), &TreeItem::get_icon);
 
@@ -2080,6 +2102,7 @@ void Tree::update_item_cell(TreeItem *p_item, int p_col) const {
 	} else {
 		font_size = theme_cache.font_size;
 	}
+
 	p_item->cells.write[p_col].text_buf->add_string(valtext, font, font_size, p_item->cells[p_col].language);
 
 	BitField<TextServer::LineBreakFlag> break_flags = TextServer::BREAK_MANDATORY | TextServer::BREAK_TRIM_EDGE_SPACES;
@@ -2099,7 +2122,13 @@ void Tree::update_item_cell(TreeItem *p_item, int p_col) const {
 	}
 	p_item->cells.write[p_col].text_buf->set_break_flags(break_flags);
 
-	TS->shaped_text_set_bidi_override(p_item->cells[p_col].text_buf->get_rid(), structured_text_parser(p_item->cells[p_col].st_parser, p_item->cells[p_col].st_args, valtext));
+	if (!p_item->cells.write[p_col].subtext.is_empty()) {	
+		//p_item->cells.write[p_col].text_buf->add_string(" : " + p_item->cells.write[p_col].subtext, font, font_size * 0.75, p_item->cells[p_col].language);
+		p_item->cells.write[p_col].text_buf->add_string(p_item->cells.write[p_col].subtext, font, font_size, p_item->cells[p_col].language);
+	} else {
+		TS->shaped_text_set_bidi_override(p_item->cells[p_col].text_buf->get_rid(), structured_text_parser(p_item->cells[p_col].st_parser, p_item->cells[p_col].st_args, valtext));
+	}
+
 	p_item->cells.write[p_col].dirty = false;
 }
 
