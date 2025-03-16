@@ -2123,8 +2123,7 @@ void Tree::update_item_cell(TreeItem *p_item, int p_col) const {
 	p_item->cells.write[p_col].text_buf->set_break_flags(break_flags);
 
 	if (!p_item->cells.write[p_col].subtext.is_empty()) {	
-		//p_item->cells.write[p_col].text_buf->add_string(" : " + p_item->cells.write[p_col].subtext, font, font_size * 0.75, p_item->cells[p_col].language);
-		p_item->cells.write[p_col].text_buf->add_string(p_item->cells.write[p_col].subtext, font, font_size, p_item->cells[p_col].language);
+		p_item->cells.write[p_col].text_buf->add_string(" : " + p_item->cells.write[p_col].subtext, font, font_size * 0.75, p_item->cells[p_col].language);
 	} else {
 		TS->shaped_text_set_bidi_override(p_item->cells[p_col].text_buf->get_rid(), structured_text_parser(p_item->cells[p_col].st_parser, p_item->cells[p_col].st_args, valtext));
 	}
