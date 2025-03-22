@@ -67,6 +67,7 @@ private:
 		Node::AutoTranslateMode auto_translate_mode = Node::AUTO_TRANSLATE_MODE_INHERIT;
 		bool edit_multiline = false;
 		String suffix;
+		String subtext;
 		Ref<TextParagraph> text_buf;
 		String language;
 		TextServer::StructuredTextParser st_parser = TextServer::STRUCTURED_TEXT_DEFAULT;
@@ -261,6 +262,9 @@ public:
 
 	void set_suffix(int p_column, String p_suffix);
 	String get_suffix(int p_column) const;
+
+	void set_subtext(int p_column, String p_subtext);
+	String get_subtext(int p_column) const;
 
 	void set_icon(int p_column, const Ref<Texture2D> &p_icon);
 	Ref<Texture2D> get_icon(int p_column) const;

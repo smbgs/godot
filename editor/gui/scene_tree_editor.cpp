@@ -384,7 +384,15 @@ void SceneTreeEditor::_update_node(Node *p_node, TreeItem *p_item, bool p_part_o
 	p_item->set_selectable(0, true);
 
 	p_item->set_text(0, p_node->get_name());
+
+	StringName custom_type = EditorNode::get_singleton()->get_object_custom_type_name(p_node);	
+	String subtext = (custom_type != StringName() ? String(custom_type) : p_node->get_class());
+	
+	p_item->set_subtext(0, subtext != p_node->get_name() ? subtext : "");
+
 	p_item->set_text_overrun_behavior(0, TextServer::OVERRUN_NO_TRIMMING);
+	p_item->set_autowrap_mode(0, TextServer::AUTOWRAP_WORD_SMART);
+
 	if (can_rename && !p_part_of_subscene) {
 		p_item->set_editable(0, true);
 	}
